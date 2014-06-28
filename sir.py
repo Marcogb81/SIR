@@ -1,5 +1,7 @@
 """Implementation of Semantic Information Retrieval AI.
 
+Based on the article from Open Book Project: http://www.openbookproject.net/py4fun/sir/sir.html
+
 This is a simple artificial intelligence that takes as inputs strings
 of information. You can then ask it questions and it will try to answer them
 based on context of previous knowledge.
@@ -54,7 +56,10 @@ class SIR(object):
 
              ( "does (every|an|a) (.*) own (a|an) (.*)", lambda g: self.GetPath(g,"1e*ms*ps*e*3")),
              ( "does any (.*) own (a|an) (.*)",          lambda g: self.GetPath(g,"0S*Me*ps*e*2")),
-             ( "does (.*) own (a|an) (.*)",              lambda g: self.GetPath(g,"0e*ms*ps*e*2")),
+             ( "does (.*) own (a|an) (.*)",              lambda g: self.GetPath(g,"0e*p*m*s*e*2")),
+             ( "does (.*) own (.*)",                     lambda g: self.GetPath(g,"0e*p*e*1")),
+
+             ( "debug", lambda g: self.ToggleDebug()),
              ( "quit",                                   lambda g: sys.exit()          ),
         )
 
@@ -75,6 +80,7 @@ class SIR(object):
             fact = (word1, relationship, word2)
             if self.debug : print "Added relationship: ", fact
             self.facts.append(fact)
+        print "Okay."
 
     def parseString(self, string):
         """Parses a string of information."""
@@ -104,9 +110,9 @@ class SIR(object):
         else:
             detail = ""
         if ans: 
-            print "  Yes ", detail
+            print "Yes.", detail
         else: 
-            print "  Not sure ", detail
+            print "Not that I know of.", detail
 
     def _path(self, pat, start, end, before=set(), ans=[], sofar="", indent=" "):
         """Helper static method that gets a pattern and runs a DFS to find it.
@@ -167,12 +173,12 @@ class SIR(object):
             ans = 1
         return 0
 
-
-
+    def ToggleDebug(self):
+        """Just switches whether debug mode is on."""
+        self.debug = not self.debug
 
 def main():
     siri = SIR()
-    siri.debug = True
     while True:
         sent = raw_input(">>")
         siri.parseString(sent)
